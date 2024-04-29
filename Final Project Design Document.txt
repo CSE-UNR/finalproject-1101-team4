@@ -1,0 +1,56 @@
+﻿Final Project Design Document
+Colby Jones & Brooke Jrujillo
+Image processor and editor
+
+
+Data:
+* Image pixels: 2d char array (size will be determined by image)
+- pointers: pixel array, string
+* File selection: scanf with string storage
+* Menus: int variable with switch statement
+* Crop amount: int variable
+* Dim option, bright option: for loop with switch statement
+* Save to file: file pointer
+
+
+Functions:
+Main():
+-No input parameters
+-No returned output
+-Purpose: sort of a hub for the image pixel array. Used to store and load the original image, and even store the edited version. Displays the menu for editing/ loading an image. The user inputs how large the image is here.
+
+
+loadImage():
+-Input parameters: 2d char array, int width and height
+-Returned output: same 2d array but copied from file.
+-Purpose: this function sends the 2d array from the main function, and copies the values from a separate file. It then returns the 2d array with the new values to the main function.
+
+
+displayImage():
+-Input parameters: 2d char array, int width and height
+-Returned output: none
+-Purpose: Simply shows the user the image from the file.
+
+
+cropImage():
+-Input Parameters: 2d char array, int width and height
+-returned output: none
+-purpose: Reduces the size of the array by changing the value at the users choice to \0 on both rows and columns.
+
+
+brightImage():
+-Input Parameters: 2d char array, int width and height
+-returned output:none
+-purpose: increases the “brightness” value on each pixel by 1.
+
+
+dimImage():
+-Input Parameters: 2d char array, int width and height
+-Returned Output: none
+-Purpose: decreases the “darkness” value on each pixel by 1.
+
+
+saveToFIle():
+-Input Parameters: 2d char Array, int width and height
+-Returned Output: 2d char Array
+-Purpose: Ask the user after editing if they want to save this file. This function is called on cropImage(), brightImage(), and dimImage() to verify that the user wants these changes. Then saves the “image” to a file of their choice.
