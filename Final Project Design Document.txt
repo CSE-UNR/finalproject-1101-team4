@@ -1,6 +1,6 @@
 ﻿Final Project Design Document
-Colby Jones & Brooke Jrujillo
-Image processor and editor
+Colby Jones & Brooke Trujillo
+-Image processor and editor-
 
 
 Data:
