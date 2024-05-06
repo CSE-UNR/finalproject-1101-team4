@@ -82,51 +82,45 @@ void loadImage(char imagePixels[][MAX_WIDTH], char fileName[MAX_FILE_LENGTH], in
 	//file pointer for file IO
 	FILE* imgLoad;
 	char temp;
-	char temp2;
 	
 	imgLoad= fopen(fileName, "r");
 	
 	//for loop that assigns each image pixel to an address in the array and the "brightness" value
 	for(int i=0; i< MAX_HEIGHT; i++){
-	printf("Row %d: ", i+1);
-	if(fscanf(imgLoad, "%c", &temp2[i])==1){
 		for(int j=0; j< MAX_WIDTH; j++){
+				if(fscanf(imgLoad, "%c", &temp)==1 && temp != '\n'){
 					
-			if(temp2 != '\0'){
-					
-					imagePixels[i][j]= temp2;
+					imagePixels[i][j]= temp;
 					
 					switch(imagePixels[i][j]){
 					
 						case '0':
-							imagePixels[i][j]= '0';
+							imagePixels[i][j]= ' ';
 							break;
 					
 						case '1':
-							imagePixels[i][j]= '1';
+							imagePixels[i][j]= '.';
 							break;
 						case '2':
-							imagePixels[i][j]= '2';
+							imagePixels[i][j]= 'o';
 							break;
 						case '3':
-							imagePixels[i][j]= '3';
+							imagePixels[i][j]= 'O';
 							break;
 						case '4':
-							imagePixels[i][j]= '4';
+							imagePixels[i][j]= '0';
 							break;
-							
-							
 					}
 					printf("%c", imagePixels[i][j]);
 				*imgWidth= j+1;
+				
 				*imgLength= i+1;
-		}
-		else{
+			}
+			else{
 				imagePixels[i][j]= '\n';
+				break;
 			}
 		}
-		
-	}
 	}
 	fclose(imgLoad);	
 }
