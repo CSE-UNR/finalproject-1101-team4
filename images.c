@@ -10,7 +10,7 @@
 //prototypes
 void loadImage(char imagePixels[][MAX_WIDTH], char fileName[MAX_FILE_LENGTH], int* imgLength, int* imgWidth);
 void displayImage(char imagePixels[][MAX_WIDTH], char fileName[MAX_FILE_LENGTH], int imgSize, int imgLength, int imgWidth);
-void editingMenu(int editChoice);
+void editingMenu(int editChoice, char imagePixels[][MAX_WIDTH], int imgLength, int imgWidth);
 void cropImage();
 void brightImage();
 void dimImage();
@@ -62,7 +62,7 @@ int main(){
 			break;
 			//brings up edit menu
 			case 3:
-				editingMenu(editChoice);
+				editingMenu(editChoice, imageInfo, imgLength, imgWidth);
 			break;
 			//closes the program
 			case 0:
@@ -81,25 +81,22 @@ void loadImage(char imagePixels[][MAX_WIDTH], char fileName[MAX_FILE_LENGTH], in
 	
 	//file pointer for file IO
 	FILE* imgLoad;
-	char temp[MAX_WIDTH];
+	char temp;
 	
 	imgLoad= fopen(fileName, "r");
 	
 	//for loop that assigns each image pixel to an address in the array and the "brightness" value
-	for(int i=0; i<= MAX_HEIGHT; i++){
-	printf("Row %d \n", i);
-		if(fscanf(imgLoad, "%s", &temp[i])==1){
-			for(int j=0; temp[j]!= '\0'; j++){
-					if(i=0){
-						*imgWidth= j;
-					}
+	for(int i=0; i< MAX_HEIGHT; i++){
+	printf("Row %d: ", i+1);
+			for(int j=0; j< MAX_WIDTH; j++){
 					
-					fscanf(imgLoad, "%c", &imagePixels[i][j]);
-					
-		
-					switch(imagePixels[i][j]){
+				if (fscanf(imgLoad, "%c", &temp)==1){
 				
-						case'0':
+				
+					
+					switch(temp){
+				
+						case '0':
 							imagePixels[i][j]= ' ';
 							break;
 				
@@ -115,14 +112,17 @@ void loadImage(char imagePixels[][MAX_WIDTH], char fileName[MAX_FILE_LENGTH], in
 						case '4':
 							imagePixels[i][j]= '0';
 							break;
-						default:
-							imagePixels[i][j]= 'X';
-							break;
+						
 					}
-			printf("%c", imagePixels[i][j]);
+					printf("%c", imagePixels[i][j]);
+				
+				*imgWidth= j+1;
+				*imgLength= i+1;
 			}
-			*imgLength= i+1;
-	}
+			else{
+				break;
+			}
+		}
 	}
 	fclose(imgLoad);	
 }
@@ -142,7 +142,7 @@ void displayImage(char imagePixels[][MAX_WIDTH], char fileName[MAX_FILE_LENGTH],
 	printf("\n");
 }
 
-void editingMenu(int editChoice){
+void editingMenu(int editChoice, char imagePixels[][MAX_WIDTH], int imgLength, int imgWidth){
 char input;
 do{
 		//editing Menu
@@ -162,7 +162,7 @@ do{
 				printf("Would you like to save the file? (y/n) ");
 				scanf(" %c", &input);
 				if (input != 'n'){
-					saveToFile(imageInfo, imgLength, imgWidth);
+					saveToFile(imagePixels, imgLength, imgWidth);
 				}
 			break;
 			//bright Image
@@ -171,7 +171,7 @@ do{
 				printf("Would you like to save the file? (y/n) ");
 				scanf(" %c", &input);
 				if (input != 'n'){
-					saveToFile(imageInfo, imgLength, imgWidth);
+					saveToFile(imagePixels, imgLength, imgWidth);
 				}
 			break;
 			//dimImage
@@ -180,7 +180,7 @@ do{
 				printf("Would you like to save the file? (y/n) ");
 				scanf(" %c", &input);
 				if (input != 'n'){
-					saveToFile(imageInfo, imgLength, imgWidth);
+					saveToFile(imagePixels, imgLength, imgWidth);
 				}
 			break;
 			//back to main menue
