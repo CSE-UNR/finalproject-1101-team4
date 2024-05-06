@@ -82,17 +82,19 @@ void loadImage(char imagePixels[][MAX_WIDTH], char fileName[MAX_FILE_LENGTH], in
 	//file pointer for file IO
 	FILE* imgLoad;
 	char temp;
+	char temp2;
 	
 	imgLoad= fopen(fileName, "r");
 	
 	//for loop that assigns each image pixel to an address in the array and the "brightness" value
 	for(int i=0; i< MAX_HEIGHT; i++){
 	printf("Row %d: ", i+1);
+	if(fscanf(imgLoad, "%c", &temp2[i])==1){
 		for(int j=0; j< MAX_WIDTH; j++){
 					
-			if(fscanf(imgLoad, "%c", &temp)==1 && temp!= '\0'){
+			if(temp2 != '\0'){
 					
-					imagePixels[i][j]= temp;
+					imagePixels[i][j]= temp2;
 					
 					switch(imagePixels[i][j]){
 					
@@ -124,6 +126,7 @@ void loadImage(char imagePixels[][MAX_WIDTH], char fileName[MAX_FILE_LENGTH], in
 			}
 		}
 		
+	}
 	}
 	fclose(imgLoad);	
 }
