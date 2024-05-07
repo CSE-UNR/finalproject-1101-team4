@@ -89,8 +89,8 @@ void loadImage(char imagePixels[][MAX_WIDTH], char fileName[MAX_FILE_LENGTH], in
 	for(int i=0; i< MAX_HEIGHT; i++){
 	printf("Row %d: ", i+1);
 		for(int j=0; j< MAX_WIDTH; j++){
-					
-			if(fscanf(imgLoad, "%c", &temp)==1 && temp!= '\0'){
+			
+			if(fscanf(imgLoad, "%c", &temp)==1 && temp!= '\n'){
 					
 					imagePixels[i][j]= temp;
 					
@@ -115,11 +115,12 @@ void loadImage(char imagePixels[][MAX_WIDTH], char fileName[MAX_FILE_LENGTH], in
 							
 							
 					}
-					printf("%c", imagePixels[i][j]);
+					
 				*imgWidth= j+1;
 				*imgLength= i+1;
-		}
-		else{
+			}
+			printf("%c", imagePixels[i][j]);
+			else{
 				imagePixels[i][j]= '\n';
 			}
 		}
