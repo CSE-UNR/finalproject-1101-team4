@@ -84,7 +84,10 @@ void loadImage(char imagePixels[][MAX_WIDTH], char fileName[MAX_FILE_LENGTH], in
 	char temp;
 	
 	imgLoad= fopen(fileName, "r");
-	
+	if(imgLoad== NULL){
+	printf("That file does not exist");
+	}
+	else{
 	//for loop that assigns each image pixel to an address in the array and the "brightness" value
 	for(int i=0; i< MAX_HEIGHT; i++){
 		for(int j=0; j< MAX_WIDTH; j++){
@@ -119,7 +122,8 @@ void loadImage(char imagePixels[][MAX_WIDTH], char fileName[MAX_FILE_LENGTH], in
 			}
 		}
 	}
-	fclose(imgLoad);	
+	fclose(imgLoad);
+	}	
 }
 
 void displayImage(char imagePixels[][MAX_WIDTH], char fileName[MAX_FILE_LENGTH], int imgSize, int imgLength, int imgWidth){
@@ -158,6 +162,12 @@ char input;
 				scanf(" %c", &input);
 				if (input != 'n'){
 					saveToFile(imagePixels, imgLength, imgWidth);
+					loadImage(imagePixels, fileName, &imgLength, &imgWidth);
+					editChoice= 0;
+				}
+				else{
+					loadImage(imagePixels, fileName, &imgLength, &imgWidth);
+					editChoice= 0;
 				}
 			break;
 			//bright Image
@@ -168,6 +178,12 @@ char input;
 				scanf(" %c", &input);
 				if (input != 'n'){
 					saveToFile(imagePixels, imgLength, imgWidth);
+					loadImage(imagePixels, fileName, &imgLength, &imgWidth);
+					editChoice= 0;
+				}
+				else{
+					loadImage(imagePixels, fileName, &imgLength, &imgWidth);
+					editChoice= 0;
 				}
 			break;
 			//dimImage
@@ -178,6 +194,12 @@ char input;
 				scanf(" %c", &input);
 				if (input != 'n'){
 					saveToFile(imagePixels, imgLength, imgWidth);
+					loadImage(imagePixels, fileName, &imgLength, &imgWidth);
+					editChoice= 0;
+				}
+				else{
+					loadImage(imagePixels, fileName, &imgLength, &imgWidth);
+					editChoice= 0;
 				}
 			break;
 			//back to main menue
@@ -190,43 +212,68 @@ char input;
 	}while (editChoice != 0);
 }
 void cropImage(int imagePixels[][MAX_WIDTH],int*imageHeight, int*imageWidth){
-int top, bottom, left, right;
+	int top, bottom, left, right;
 
-//these variables are used to find the new size of the image by comparing the distance between top/bottom, and left/ right
-int newWidth, newHeight;
+	//these variables are used to find the new size of the image by comparing the distance between top/bottom, and left/ right
+	int cropHeight;
+	int cropWidth;
+	
+	printf("Time to crop! Please choose the size you want for the crop of your new image\n");
+	do{
+		printf("Top:\n");
+		scanf("%d", &top);
 
-printf("Time to crop! Please choose the size you want for the crop of your new image\n");
-printf("Top:\n");
-scanf("%d", &top);
-
-printf("Bottom:\n");
-scanf("%d", &bottom);
-
-newHeight= bottom - top;
-
-printf("Left:\n");
-scanf("%d", &left);
-
-printf("Right:\n");
-scanf("%d", &right);
-
-newWidth= right-left;
-
-//sets the image width/height temporarily to the new ones
-*imageHeight= newHeight;
-*imageWidth= newWidth;
+		printf("Bottom:\n");
+		scanf("%d", &bottom);
+		
+		//adds one to height/width if user picks 0(first in array).
+		if(top=0){
+			cropHeight= (bottom - top)+1;
+		}else{
+			cropHeight= bottom - top;
+		}
+		
+		printf("Left:\n");
+		scanf("%d", &left);
+		
+		printf("Right:\n");
+		scanf("%d", &right);
+		if(left=0){
+			cropHeight= (right - left)+1;
+		}else{
+		cropWidth= right - left;
+		}
+		//sets the image width/height to the new ones
+		*imageHeight= cropHeight;
+		*imageWidth= cropWidth;
+		
+		if(cropWidth<0 || cropHeight<0){
+			printf("invalid Height/ width. \nPlease make sure that the bottom/ right of the image is larger than the top/left\n");
+		}
+	}while(cropWidth< 0 || cropHeight< 0);
 
 	//for cropping the image
-	for(int i=0; i< newHeight; i++){
-		for(int j=0; j<=newWidth; j++){
-			if(j=newWidth){
+	for(int i= 0; i< cropHeight; i++){
+		for(int j= 0; j<=cropWidth; j++){
+			
+			if(imagePixels[i][j]!='\n' && j!= cropWidth){
+				imagePixels[i][j]= imagePixels[i+top][j+left];
+			}
+			else{
 				imagePixels[i][j+1]= '\n';
 			}
-			else {
-			imagePixels[i][j]= imagePixels[top+i][left+j];
-			}
+			
+		}
+		
+	}
+	printf("\n");
+	printf("Edited Image:\n");
+	for(int i; i<cropHeight; i++){
+		for(int j; j< cropWidth; j++){
+			printf("%c", imagePixels[i][j]);
 		}
 	}
+	printf("\n");
 }
 void brightImage(char fileName[MAX_FILE_LENGTH], char imagePixels[][MAX_WIDTH],int imgLength, int imgWidth){
 	char pixel;
@@ -247,18 +294,18 @@ void brightImage(char fileName[MAX_FILE_LENGTH], char imagePixels[][MAX_WIDTH],i
 				switch(pixel){
 					case ' ':
 						imagePixels[i][j] = '.';
-					break; 
+						break; 
 					case '.':
 						imagePixels[i][j] = 'o';
-					break;
+						break;
 					case 'o':
 						imagePixels[i][j] = 'O';
-					break;
+						break;
 					case 'O':
 						imagePixels[i][j] = '0';
-					break;
+						break;
 					case '0':
-					break;
+						break;
 				}
 		}
 	}
@@ -319,7 +366,7 @@ char pixel;
 void saveToFile(char imagePixels[][MAX_WIDTH], int imgLength, int imgWidth){
 	FILE* imgSave;
 	
-	//name of the file the user wants to save to
+	//name array of the file the user wants to save to
 	char saveFile[MAX_FILE_LENGTH];
 	
 	printf("Which file would you like to save to?\n");
@@ -330,6 +377,7 @@ void saveToFile(char imagePixels[][MAX_WIDTH], int imgLength, int imgWidth){
 	//for loop that converts the brightness pixels (space, ., o, etc.) to numbers, and writes them into a file
 	for(int i=0; i<imgLength; i++){
 		for(int j=0; j<=imgWidth; j++){
+		
 			switch(imagePixels[i][j]){
 				case ' ':
 					imagePixels[i][j]= '0';
@@ -346,13 +394,15 @@ void saveToFile(char imagePixels[][MAX_WIDTH], int imgLength, int imgWidth){
 				case '0':
 					imagePixels[i][j]= '4';
 					break;
-				case '\n':imagePixels[i][j]== '\n';
-					fprintf(imgSave, "%c", imagePixels[i][j]);
-					break;
-			}	
+				
+			}
+			if(imagePixels[i][j]!= '\n'){
 			fprintf(imgSave, "%c", imagePixels[i][j]);
+			}
+			else if(j=imgWidth){
+				fprintf(imgSave, "%c", imagePixels[i][j]);
+			}
 		}
 	}
 	fclose(imgSave);
 }
-
